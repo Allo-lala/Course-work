@@ -1,67 +1,76 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#faf7f0;
-  --fg:#1a2e33;
-  --card:#f3ede2;
-  --primary:#2a7a6e;
-  --accent:#d4a017;
-  --danger:#e53935;
+  --bg:#faf7f0;--fg:#1a2e33;
+  --card:#f3ede2;--card-fg:#1a2e33;
+  --primary:#2a7a6e;--primary-fg:#faf7f0;
+  --secondary:#e8d9b4;--secondary-fg:#1a2e33;
+  --muted:#e8e2d8;--muted-fg:#6b7a7e;
+  --accent:#d4a017;--accent-fg:#1a2e33;
+  --destructive:#e53935;--success:#3a9a5c;
+  --border:#e0d8c8;--radius:0.75rem;
+  --font-heading:'Amiri',serif;--font-body:'IBM Plex Sans',sans-serif;
 }
-
-body.dark{
-  --bg:#0f172a;
-  --fg:#e2e8f0;
-  --card:#1e293b;
-  --primary:#22c55e;
+body{font-family:var(--font-body);background:var(--bg);color:var(--fg);min-height:100vh;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23d4c5a0' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E");
 }
+.container{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
 
-body{
-  background:var(--bg);
-  color:var(--fg);
-  font-family:'IBM Plex Sans',sans-serif;
-}
+/* Header */
+header{text-align:center;padding:2.5rem 0 1rem}
+header h1{font-family:var(--font-heading);font-size:3.5rem;font-weight:700;
+  background:linear-gradient(135deg,#d4a017,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header .subtitle{font-family:var(--font-heading);font-size:1.3rem;color:var(--fg);margin-top:.25rem}
+header .desc{font-size:.85rem;color:var(--muted-fg);max-width:28rem;margin:.5rem auto 0}
 
-.container{max-width:900px;margin:auto;padding:1rem}
+/* Next prayer banner */
+.next-banner{text-align:center;margin-bottom:2rem}
+.next-banner .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted-fg);margin-bottom:.25rem}
+.next-banner .time{font-size:2.8rem;font-weight:700;color:var(--primary);letter-spacing:.08em;font-family:var(--font-body)}
 
-header{text-align:center}
-h1{font-size:3rem;font-family:'Amiri'}
+/* Prayer grid */
+.prayer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem}
+.prayer-card{position:relative;border-radius:var(--radius);padding:1.25rem;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .3s,transform .3s;overflow:hidden}
+.prayer-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
+.prayer-card.is-next{background:var(--primary);color:var(--primary-fg);box-shadow:0 6px 20px rgba(42,122,110,.25);outline:2px solid var(--accent)}
+.prayer-card .arabic{position:absolute;top:.4rem;right:.75rem;font-family:var(--font-heading);font-size:1.8rem;opacity:.12;user-select:none}
+.prayer-card.is-next .arabic{opacity:.2}
+.prayer-card .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;position:relative;z-index:1}
+.prayer-card .name{font-family:var(--font-heading);font-size:1.1rem;font-weight:600}
+.next-badge{font-size:.65rem;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:.15rem .5rem;border-radius:99px}
+.prayer-card .time-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;position:relative;z-index:1}
+.prayer-card .time-row svg{width:16px;height:16px;opacity:.7}
+.prayer-card .time-display{font-weight:500;font-size:.9rem}
+.edit-btn,.save-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:4px;color:inherit;opacity:.5;transition:opacity .2s}
+.edit-btn:hover,.save-btn:hover{opacity:1;background:rgba(255,255,255,.15)}
+.time-input{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.3rem .5rem;font-size:.85rem;font-family:var(--font-body);color:inherit}
+.prayer-card:not(.is-next) .time-input{background:rgba(0,0,0,.04);border-color:var(--border);color:var(--fg)}
+.countdown-row{font-size:1.4rem;font-weight:700;letter-spacing:.06em;position:relative;z-index:1;display:flex;align-items:center;gap:.5rem}
+.countdown-row .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--success)}
+.countdown-row.urgent{color:var(--destructive);animation:pulse 1s infinite}
+.countdown-row.urgent .dot{background:var(--destructive)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-.controls{text-align:center;margin:10px}
+/* Fasting */
+.fasting-card{border-radius:var(--radius);background:var(--card);padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:2rem}
+.fasting-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.fasting-header h2{font-family:var(--font-heading);font-size:1.5rem;font-weight:700}
+.toggle-btn{display:flex;align-items:center;gap:.4rem;padding:.35rem .75rem;border-radius:99px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;font-family:var(--font-body);transition:background .2s}
+.toggle-btn.active{background:var(--success);color:#fff}
+.toggle-btn.inactive{background:var(--muted);color:var(--muted-fg)}
+.fasting-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.fasting-grid{grid-template-columns:1fr}}
+.fasting-slot{border-radius:.6rem;padding:1rem;transition:opacity .3s}
+.fasting-slot.suhoor{background:rgba(42,122,110,.1)}
+.fasting-slot.iftar{background:rgba(212,160,23,.18)}
+.fasting-slot.disabled{opacity:.45}
+.fasting-slot .slot-label{display:flex;align-items:center;gap:.5rem;font-family:var(--font-heading);font-size:1.05rem;margin-bottom:.75rem}
+.fasting-slot .slot-label svg{width:20px;height:20px;color:var(--primary)}
+.fasting-slot.iftar .slot-label svg{color:var(--accent-fg)}
+.fasting-slot input[type=time]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-size:.85rem;font-family:var(--font-body);margin-bottom:.6rem}
+.fasting-slot input:disabled{opacity:.4}
+.fasting-slot .countdown{font-size:1.15rem;font-weight:700;letter-spacing:.05em}
 
-.prayer-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:1rem;
-}
+footer{text-align:center;font-size:.75rem;color:var(--muted-fg);margin-top:2rem}
 
-.prayer-card{
-  background:var(--card);
-  padding:1rem;
-  border-radius:10px;
-  transition:.3s;
-}
-
-.prayer-card.is-next{
-  background:var(--primary);
-  color:white;
-  border:2px solid var(--accent);
-}
-
-.next-badge{
-  background:var(--accent);
-  padding:2px 8px;
-  border-radius:10px;
-}
-
-.urgent{color:var(--danger)}
-
-.fasting-card{
-  margin-top:2rem;
-  padding:1rem;
-  background:var(--card);
-  border-radius:10px;
-}
-
-.toggle-btn.active{background:green;color:white}
-.toggle-btn.inactive{background:gray;color:white}
-
-.disabled{opacity:.4}
+/* Icons inline SVG helper */
+.icon{display:inline-flex;vertical-align:middle}
