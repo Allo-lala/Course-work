@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qalb — Smart Islamic Prayer & Fasting Reminder</title>
+<meta name="description" content="Stay spiritually consistent with real-time prayer countdowns and fasting schedule management.">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf7f0;--fg:#1a2e33;
+  --card:#f3ede2;--card-fg:#1a2e33;
+  --primary:#2a7a6e;--primary-fg:#faf7f0;
+  --secondary:#e8d9b4;--secondary-fg:#1a2e33;
+  --muted:#e8e2d8;--muted-fg:#6b7a7e;
+  --accent:#d4a017;--accent-fg:#1a2e33;
+  --destructive:#e53935;--success:#3a9a5c;
+  --border:#e0d8c8;--radius:0.75rem;
+  --font-heading:'Amiri',serif;--font-body:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--font-body);background:var(--bg);color:var(--fg);min-height:100vh;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23d4c5a0' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E");
+}
+.container{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
+
+/* Header */
+header{text-align:center;padding:2.5rem 0 1rem}
+header h1{font-family:var(--font-heading);font-size:3.5rem;font-weight:700;
+  background:linear-gradient(135deg,#d4a017,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header .subtitle{font-family:var(--font-heading);font-size:1.3rem;color:var(--fg);margin-top:.25rem}
+header .desc{font-size:.85rem;color:var(--muted-fg);max-width:28rem;margin:.5rem auto 0}
+
+/* Next prayer banner */
+.next-banner{text-align:center;margin-bottom:2rem}
+.next-banner .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted-fg);margin-bottom:.25rem}
+.next-banner .time{font-size:2.8rem;font-weight:700;color:var(--primary);letter-spacing:.08em;font-family:var(--font-body)}
+
+/* Prayer grid */
+.prayer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem}
+.prayer-card{position:relative;border-radius:var(--radius);padding:1.25rem;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .3s,transform .3s;overflow:hidden}
+.prayer-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
+.prayer-card.is-next{background:var(--primary);color:var(--primary-fg);box-shadow:0 6px 20px rgba(42,122,110,.25);outline:2px solid var(--accent)}
+.prayer-card .arabic{position:absolute;top:.4rem;right:.75rem;font-family:var(--font-heading);font-size:1.8rem;opacity:.12;user-select:none}
+.prayer-card.is-next .arabic{opacity:.2}
+.prayer-card .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;position:relative;z-index:1}
+.prayer-card .name{font-family:var(--font-heading);font-size:1.1rem;font-weight:600}
+.next-badge{font-size:.65rem;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:.15rem .5rem;border-radius:99px}
+.prayer-card .time-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;position:relative;z-index:1}
+.prayer-card .time-row svg{width:16px;height:16px;opacity:.7}
+.prayer-card .time-display{font-weight:500;font-size:.9rem}
+.edit-btn,.save-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:4px;color:inherit;opacity:.5;transition:opacity .2s}
+.edit-btn:hover,.save-btn:hover{opacity:1;background:rgba(255,255,255,.15)}
+.time-input{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:.3rem .5rem;font-size:.85rem;font-family:var(--font-body);color:inherit}
+.prayer-card:not(.is-next) .time-input{background:rgba(0,0,0,.04);border-color:var(--border);color:var(--fg)}
+.countdown-row{font-size:1.4rem;font-weight:700;letter-spacing:.06em;position:relative;z-index:1;display:flex;align-items:center;gap:.5rem}
+.countdown-row .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--success)}
+.countdown-row.urgent{color:var(--destructive);animation:pulse 1s infinite}
+.countdown-row.urgent .dot{background:var(--destructive)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Fasting */
+.fasting-card{border-radius:var(--radius);background:var(--card);padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:2rem}
+.fasting-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.fasting-header h2{font-family:var(--font-heading);font-size:1.5rem;font-weight:700}
+.toggle-btn{display:flex;align-items:center;gap:.4rem;padding:.35rem .75rem;border-radius:99px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;font-family:var(--font-body);transition:background .2s}
+.toggle-btn.active{background:var(--success);color:#fff}
+.toggle-btn.inactive{background:var(--muted);color:var(--muted-fg)}
+.fasting-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.fasting-grid{grid-template-columns:1fr}}
+.fasting-slot{border-radius:.6rem;padding:1rem;transition:opacity .3s}
+.fasting-slot.suhoor{background:rgba(42,122,110,.1)}
+.fasting-slot.iftar{background:rgba(212,160,23,.18)}
+.fasting-slot.disabled{opacity:.45}
+.fasting-slot .slot-label{display:flex;align-items:center;gap:.5rem;font-family:var(--font-heading);font-size:1.05rem;margin-bottom:.75rem}
+.fasting-slot .slot-label svg{width:20px;height:20px;color:var(--primary)}
+.fasting-slot.iftar .slot-label svg{color:var(--accent-fg)}
+.fasting-slot input[type=time]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-size:.85rem;font-family:var(--font-body);margin-bottom:.6rem}
+.fasting-slot input:disabled{opacity:.4}
+.fasting-slot .countdown{font-size:1.15rem;font-weight:700;letter-spacing:.05em}
+
+footer{text-align:center;font-size:.75rem;color:var(--muted-fg);margin-top:2rem}
+
+/* Icons inline SVG helper */
+.icon{display:inline-flex;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>قلب</h1>
+    <p class="subtitle">Qalb</p>
+    <p class="desc">Smart Islamic Prayer &amp; Fasting Reminder — stay spiritually consistent with real-time countdowns</p>
+  </header>
+
+  <div class="next-banner">
+    <p class="label">Time until <span id="next-prayer-name">--</span></p>
+    <p class="time" id="next-prayer-countdown">--:--:--</p>
+  </div>
+
+  <div class="prayer-grid" id="prayer-grid"></div>
+
+  <div class="fasting-card">
+    <div class="fasting-header">
+      <h2>Fasting Schedule</h2>
+      <button class="toggle-btn inactive" id="fasting-toggle" onclick="toggleFasting()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+        <span>Inactive</span>
+      </button>
+    </div>
+    <div class="fasting-grid">
+      <div class="fasting-slot suhoor disabled" id="suhoor-slot">
+        <div class="slot-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          Suhoor
+        </div>
+        <input type="time" id="suhoor-time" value="04:30" disabled onchange="saveFasting()">
+        <div class="countdown" id="suhoor-countdown"></div>
+      </div>
+      <div class="fasting-slot iftar disabled" id="iftar-slot">
+        <div class="slot-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          Iftar
+        </div>
+        <input type="time" id="iftar-time" value="18:35" disabled onchange="saveFasting()">
+        <div class="countdown" id="iftar-countdown"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Qalb — May your prayers be answered ✦</footer>
+</div>
+
+<script>
+const CLOCK_SVG='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+const EDIT_SVG='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
+const CHECK_SVG='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+const DEFAULT_PRAYERS=[
+  {name:'Fajr',arabic:'الفجر',time:'05:00'},
+  {name:'Dhuhr',arabic:'الظهر',time:'12:30'},
+  {name:'Asr',arabic:'العصر',time:'15:45'},
+  {name:'Maghrib',arabic:'المغرب',time:'18:30'},
+  {name:'Isha',arabic:'العشاء',time:'20:00'}
+];
+const URGENCY=180;
+
+function load(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def}catch{return def}}
+function save(key,val){localStorage.setItem(key,JSON.stringify(val))}
+
+let prayers=load('qalb-prayer-times',DEFAULT_PRAYERS);
+let fasting=load('qalb-fasting-schedule',{suhoorTime:'04:30',iftarTime:'18:35',enabled:false});
+
+function secsUntil(t){const now=new Date(),p=t.split(':').map(Number),d=new Date(now);d.setHours(p[0],p[1],0,0);if(d<=now)d.setDate(d.getDate()+1);return Math.max(0,Math.floor((d-now)/1000))}
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return[h,m,sec].map(v=>String(v).padStart(2,'0')).join(':')}
+
+function renderCards(){
+  const grid=document.getElementById('prayer-grid');
+  grid.innerHTML='';
+  const cds=prayers.map(p=>secsUntil(p.time));
+  let minI=0,minV=Infinity;
+  cds.forEach((c,i)=>{if(c>0&&c<minV){minV=c;minI=i}});
+
+  document.getElementById('next-prayer-name').textContent=prayers[minI].name;
+  document.getElementById('next-prayer-countdown').textContent=fmt(cds[minI]);
+
+  prayers.forEach((p,i)=>{
+    const isNext=i===minI, urgent=cds[i]>0&&cds[i]<=URGENCY;
+    const card=document.createElement('div');
+    card.className='prayer-card'+(isNext?' is-next':'');
+    card.innerHTML=`
+      <span class="arabic">${p.arabic}</span>
+      <div class="top-row">
+        <span class="name">${p.name}</span>
+        ${isNext?'<span class="next-badge">Next</span>':''}
+      </div>
+      <div class="time-row">
+        ${CLOCK_SVG}
+        <span class="time-display" id="td-${i}">${p.time}</span>
+        <button class="edit-btn" id="eb-${i}" onclick="startEdit(${i})">${EDIT_SVG}</button>
+      </div>
+      <div class="countdown-row${urgent?' urgent':''}">
+        <span class="dot"></span>
+        <span id="cd-${i}">${fmt(cds[i])}</span>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function startEdit(i){
+  const row=document.getElementById('td-'+i).parentElement;
+  const btn=document.getElementById('eb-'+i);
+  const disp=document.getElementById('td-'+i);
+  disp.outerHTML=`<input type="time" class="time-input" id="ti-${i}" value="${prayers[i].time}">`;
+  btn.innerHTML=CHECK_SVG;btn.onclick=()=>saveEdit(i);
+}
+function saveEdit(i){
+  const inp=document.getElementById('ti-'+i);
+  if(inp)prayers[i].time=inp.value;
+  save('qalb-prayer-times',prayers);renderCards();
+}
+
+function toggleFasting(){
+  fasting.enabled=!fasting.enabled;saveFasting();updateFastingUI();
+}
+function saveFasting(){
+  fasting.suhoorTime=document.getElementById('suhoor-time').value;
+  fasting.iftarTime=document.getElementById('iftar-time').value;
+  save('qalb-fasting-schedule',fasting);
+}
+function updateFastingUI(){
+  const btn=document.getElementById('fasting-toggle');
+  const ss=document.getElementById('suhoor-slot'),is=document.getElementById('iftar-slot');
+  const si=document.getElementById('suhoor-time'),ii=document.getElementById('iftar-time');
+  si.value=fasting.suhoorTime;ii.value=fasting.iftarTime;
+  if(fasting.enabled){
+    btn.className='toggle-btn active';btn.querySelector('span').textContent='Active';
+    ss.classList.remove('disabled');is.classList.remove('disabled');
+    si.disabled=false;ii.disabled=false;
+  }else{
+    btn.className='toggle-btn inactive';btn.querySelector('span').textContent='Inactive';
+    ss.classList.add('disabled');is.classList.add('disabled');
+    si.disabled=true;ii.disabled=true;
+    document.getElementById('suhoor-countdown').textContent='';
+    document.getElementById('iftar-countdown').textContent='';
+  }
+}
+
+function tick(){
+  const cds=prayers.map(p=>secsUntil(p.time));
+  let minI=0,minV=Infinity;
+  cds.forEach((c,i)=>{if(c>0&&c<minV){minV=c;minI=i}});
+  document.getElementById('next-prayer-name').textContent=prayers[minI].name;
+  document.getElementById('next-prayer-countdown').textContent=fmt(cds[minI]);
+  cds.forEach((c,i)=>{
+    const el=document.getElementById('cd-'+i);
+    if(el){el.textContent=fmt(c);
+      const row=el.parentElement;
+      const urgent=c>0&&c<=URGENCY;
+      row.className='countdown-row'+(urgent?' urgent':'');
+      row.querySelector('.dot').style.background=urgent?'var(--destructive)':'var(--success)';
+    }
+  });
+  if(fasting.enabled){
+    document.getElementById('suhoor-countdown').textContent=fmt(secsUntil(fasting.suhoorTime));
+    document.getElementById('iftar-countdown').textContent=fmt(secsUntil(fasting.iftarTime));
+  }
+}
+
+renderCards();updateFastingUI();tick();setInterval(tick,1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#faf7f0;--fg:#1a2e33;
+  --card:#f3ede2;--primary:#2a7a6e;
+  --accent:#d4a017;--destructive:#e53935;
+  --success:#3a9a5c;--border:#e0d8c8;
+  --radius:0.75rem;
+  --font-heading:'Amiri',serif;
+  --font-body:'IBM Plex Sans',sans-serif;
+}
+
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--fg);
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:1rem;
+}
+
+header{text-align:center;margin-bottom:2rem}
+header h1{font-size:3rem;font-family:var(--font-heading)}
+
+.next-banner{text-align:center;margin-bottom:2rem}
+.time{font-size:2rem;color:var(--primary)}
+
+.prayer-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:1rem;
+}
+
+.prayer-card{
+  background:var(--card);
+  padding:1rem;
+  border-radius:var(--radius);
+}
+
+.countdown-row{
+  font-weight:bold;
+}
+
+.countdown-row.urgent{
+  color:var(--destructive);
+}
+
+.fasting-card{
+  margin-top:2rem;
+  padding:1rem;
+  background:var(--card);
+  border-radius:var(--radius);
+}
+
+.toggle-btn{
+  padding:0.4rem 0.8rem;
+  cursor:pointer;
+}
+
+.active{background:var(--success);color:white}
+.inactive{background:#ccc}
+
+footer{
+  text-align:center;
+  margin-top:2rem;
+  font-size:0.8rem;
+}
