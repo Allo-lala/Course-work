@@ -1,21 +1,40 @@
-const DEFAULT_PRAYERS=[
-  {name:'Fajr',time:'05:00'},
-  {name:'Dhuhr',time:'12:30'},
-  {name:'Asr',time:'15:45'},
-  {name:'Maghrib',time:'18:30'},
-  {name:'Isha',time:'20:00'}
-];
+let prayers=[];
+let notifiedPrayer=null;
 
-let prayers = JSON.parse(localStorage.getItem("prayers")) || DEFAULT_PRAYERS;
+let fasting = JSON.parse(localStorage.getItem("fasting")) || {
+  enabled:false,
+  suhoor:"04:30",
+  iftar:"18:35"
+};
+
+function fetchPrayerTimes(lat, lon){
+  fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
+  .then(res=>res.json())
+  .then(data=>{
+    const t=data.data.timings;
+
+    prayers=[
+      {name:"Fajr", time:t.Fajr},
+      {name:"Dhuhr", time:t.Dhuhr},
+      {name:"Asr", time:t.Asr},
+      {name:"Maghrib", time:t.Maghrib},
+      {name:"Isha", time:t.Isha}
+    ];
+
+    renderCards();
+  });
+}
+
+navigator.geolocation.getCurrentPosition(pos=>{
+  fetchPrayerTimes(pos.coords.latitude,pos.coords.longitude);
+});
 
 function secsUntil(t){
   const now=new Date();
-  const [h,m]=t.split(":").map(Number);
+  const [h,m]=t.split(":");
   const target=new Date();
   target.setHours(h,m,0);
-
   if(target<=now) target.setDate(target.getDate()+1);
-
   return Math.floor((target-now)/1000);
 }
 
@@ -26,42 +45,96 @@ function format(s){
   return [h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");
 }
 
-function render(){
+function renderCards(){
   const grid=document.getElementById("prayer-grid");
   grid.innerHTML="";
 
-  let min=Infinity, index=0;
+  const cds=prayers.map(p=>secsUntil(p.time));
+
+  let minI=0,minV=Infinity;
+  cds.forEach((c,i)=>{if(c<minV){minV=c;minI=i}});
 
   prayers.forEach((p,i)=>{
-    let sec=secsUntil(p.time);
-
-    if(sec<min){min=sec;index=i;}
-
     const card=document.createElement("div");
-    card.className="prayer-card";
+    card.className="prayer-card"+(i===minI?" is-next":"");
 
     card.innerHTML=`
       <h3>${p.name}</h3>
+      ${i===minI?'<span class="next-badge">Next</span>':''}
       <p>${p.time}</p>
-      <div class="countdown-row ${sec<=180?"urgent":""}">
-        ${format(sec)}
-      </div>
+      <div id="cd-${i}">${format(cds[i])}</div>
     `;
 
     grid.appendChild(card);
   });
-
-  document.getElementById("next-prayer-name").textContent=prayers[index].name;
-  document.getElementById("next-prayer-countdown").textContent=format(min);
 }
 
+function tick(){
+  if(prayers.length===0) return;
+
+  const cds=prayers.map(p=>secsUntil(p.time));
+
+  let minI=0,minV=Infinity;
+  cds.forEach((c,i)=>{if(c<minV){minV=c;minI=i}});
+
+  document.getElementById("next-prayer-name").textContent=prayers[minI].name;
+  document.getElementById("next-prayer-countdown").textContent=format(minV);
+
+  cds.forEach((c,i)=>{
+    const el=document.getElementById("cd-"+i);
+    if(el) el.textContent=format(c);
+  });
+
+  // 🔊 ADHAN
+  if(minV===0 && notifiedPrayer!==minI){
+    document.getElementById("adhan-audio").play();
+    notifiedPrayer=minI;
+  }
+
+  updateFastingCountdowns();
+}
+
+setInterval(tick,1000);
+
+/* FASTING */
 function toggleFasting(){
-  alert("Fasting toggle works (extend logic if needed)");
+  fasting.enabled=!fasting.enabled;
+  localStorage.setItem("fasting",JSON.stringify(fasting));
+  updateFastingUI();
 }
 
 function saveFasting(){
-  console.log("Saved fasting time");
+  fasting.suhoor=document.getElementById("suhoor-time").value;
+  fasting.iftar=document.getElementById("iftar-time").value;
+  localStorage.setItem("fasting",JSON.stringify(fasting));
 }
 
-setInterval(render,1000);
-render();
+function updateFastingUI(){
+  const btn=document.getElementById("fasting-toggle");
+
+  if(fasting.enabled){
+    btn.className="toggle-btn active";
+    btn.innerText="Active";
+  } else {
+    btn.className="toggle-btn inactive";
+    btn.innerText="Inactive";
+  }
+
+  document.getElementById("suhoor-time").value=fasting.suhoor;
+  document.getElementById("iftar-time").value=fasting.iftar;
+}
+
+function updateFastingCountdowns(){
+  if(!fasting.enabled) return;
+
+  document.getElementById("suhoor-countdown").textContent =
+    format(secsUntil(fasting.suhoor));
+
+  document.getElementById("iftar-countdown").textContent =
+    format(secsUntil(fasting.iftar));
+}
+
+/* DARK MODE */
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+}

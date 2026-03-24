@@ -1,70 +1,67 @@
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --bg:#faf7f0;--fg:#1a2e33;
-  --card:#f3ede2;--primary:#2a7a6e;
-  --accent:#d4a017;--destructive:#e53935;
-  --success:#3a9a5c;--border:#e0d8c8;
-  --radius:0.75rem;
-  --font-heading:'Amiri',serif;
-  --font-body:'IBM Plex Sans',sans-serif;
+  --bg:#faf7f0;
+  --fg:#1a2e33;
+  --card:#f3ede2;
+  --primary:#2a7a6e;
+  --accent:#d4a017;
+  --danger:#e53935;
+}
+
+body.dark{
+  --bg:#0f172a;
+  --fg:#e2e8f0;
+  --card:#1e293b;
+  --primary:#22c55e;
 }
 
 body{
-  font-family:var(--font-body);
   background:var(--bg);
   color:var(--fg);
+  font-family:'IBM Plex Sans',sans-serif;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:1rem;
-}
+.container{max-width:900px;margin:auto;padding:1rem}
 
-header{text-align:center;margin-bottom:2rem}
-header h1{font-size:3rem;font-family:var(--font-heading)}
+header{text-align:center}
+h1{font-size:3rem;font-family:'Amiri'}
 
-.next-banner{text-align:center;margin-bottom:2rem}
-.time{font-size:2rem;color:var(--primary)}
+.controls{text-align:center;margin:10px}
 
 .prayer-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:1rem;
 }
 
 .prayer-card{
   background:var(--card);
   padding:1rem;
-  border-radius:var(--radius);
+  border-radius:10px;
+  transition:.3s;
 }
 
-.countdown-row{
-  font-weight:bold;
+.prayer-card.is-next{
+  background:var(--primary);
+  color:white;
+  border:2px solid var(--accent);
 }
 
-.countdown-row.urgent{
-  color:var(--destructive);
+.next-badge{
+  background:var(--accent);
+  padding:2px 8px;
+  border-radius:10px;
 }
+
+.urgent{color:var(--danger)}
 
 .fasting-card{
   margin-top:2rem;
   padding:1rem;
   background:var(--card);
-  border-radius:var(--radius);
+  border-radius:10px;
 }
 
-.toggle-btn{
-  padding:0.4rem 0.8rem;
-  cursor:pointer;
-}
+.toggle-btn.active{background:green;color:white}
+.toggle-btn.inactive{background:gray;color:white}
 
-.active{background:var(--success);color:white}
-.inactive{background:#ccc}
-
-footer{
-  text-align:center;
-  margin-top:2rem;
-  font-size:0.8rem;
-}
+.disabled{opacity:.4}

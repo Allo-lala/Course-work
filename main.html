@@ -4,61 +4,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Qalb — Smart Islamic Prayer & Fasting Reminder</title>
-<meta name="description" content="Stay spiritually consistent with real-time prayer countdowns and fasting schedule management.">
+<title>Qalb — Smart Islamic Reminder</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- LINK CSS -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=IBM+Plex+Sans&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
+
 <div class="container">
-  <header>
-    <h1>قلب</h1>
-    <p class="subtitle">Qalb</p>
-    <p class="desc">Smart Islamic Prayer &amp; Fasting Reminder — stay spiritually consistent with real-time countdowns</p>
-  </header>
 
-  <div class="next-banner">
-    <p class="label">Time until <span id="next-prayer-name">--</span></p>
-    <p class="time" id="next-prayer-countdown">--:--:--</p>
-  </div>
+<header>
+  <h1>قلب</h1>
+  <p class="subtitle">Qalb</p>
+</header>
 
-  <div class="prayer-grid" id="prayer-grid"></div>
-
-  <div class="fasting-card">
-    <div class="fasting-header">
-      <h2>Fasting Schedule</h2>
-      <button class="toggle-btn inactive" id="fasting-toggle" onclick="toggleFasting()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-        </svg>
-        <span>Inactive</span>
-      </button>
-    </div>
-
-    <div class="fasting-grid">
-      <div class="fasting-slot suhoor disabled" id="suhoor-slot">
-        <div class="slot-label">Suhoor</div>
-        <input type="time" id="suhoor-time" value="04:30" disabled onchange="saveFasting()">
-        <div class="countdown" id="suhoor-countdown"></div>
-      </div>
-
-      <div class="fasting-slot iftar disabled" id="iftar-slot">
-        <div class="slot-label">Iftar</div>
-        <input type="time" id="iftar-time" value="18:35" disabled onchange="saveFasting()">
-        <div class="countdown" id="iftar-countdown"></div>
-      </div>
-    </div>
-  </div>
-
-  <footer>Qalb — May your prayers be answered ✦</footer>
+<div class="controls">
+  <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 </div>
 
-<!-- LINK JS -->
+<div class="next-banner">
+  <p>Time until <span id="next-prayer-name">--</span></p>
+  <h2 id="next-prayer-countdown">--:--:--</h2>
+</div>
+
+<div id="prayer-grid" class="prayer-grid"></div>
+
+<div class="fasting-card">
+  <div class="fasting-header">
+    <h2>Fasting Schedule</h2>
+    <button id="fasting-toggle" onclick="toggleFasting()" class="toggle-btn inactive">Inactive</button>
+  </div>
+
+  <div class="fasting-grid">
+    <div id="suhoor-slot" class="fasting-slot disabled">
+      <p>Suhoor</p>
+      <input type="time" id="suhoor-time" onchange="saveFasting()">
+      <div id="suhoor-countdown"></div>
+    </div>
+
+    <div id="iftar-slot" class="fasting-slot disabled">
+      <p>Iftar</p>
+      <input type="time" id="iftar-time" onchange="saveFasting()">
+      <div id="iftar-countdown"></div>
+    </div>
+  </div>
+</div>
+
+<footer>Qalb — May your prayers be answered ✦</footer>
+
+</div>
+
+<audio id="adhan-audio" src="https://cdn.islamic.network/audio/adhan/adhan.mp3"></audio>
+
 <script src="main.js"></script>
 </body>
 </html>
