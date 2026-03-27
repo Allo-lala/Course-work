@@ -3,9 +3,9 @@ const EDIT_SVG='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stro
 const CHECK_SVG='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
 const DEFAULT_PRAYERS=[
-  {name:'Fajr',arabic:'الفجر',time:'05:00'},
-  {name:'Dhuhr',arabic:'الظهر',time:'12:30'},
-  {name:'Asr',arabic:'العصر',time:'15:45'},
+  {name:'subh',arabic:'الفجر',time:'05:00'},
+  {name:'Dhuhur',arabic:'الظهر',time:'12:30'},
+  {name:'Aswir',arabic:'العصر',time:'15:45'},
   {name:'Maghrib',arabic:'المغرب',time:'18:30'},
   {name:'Isha',arabic:'العشاء',time:'20:00'}
 ];

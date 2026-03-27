@@ -13,26 +13,74 @@
 body{font-family:var(--font-body);background:var(--bg);color:var(--fg);min-height:100vh;
   background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23d4c5a0' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E");
 }
+
 .container{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
 
 /* Header */
 header{text-align:center;padding:2.5rem 0 1rem}
 header h1{font-family:var(--font-heading);font-size:3.5rem;font-weight:700;
   background:linear-gradient(135deg,#d4a017,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-header .subtitle{font-family:var(--font-heading);font-size:1.3rem;color:var(--fg);margin-top:.25rem}
-header .desc{font-size:.85rem;color:var(--muted-fg);max-width:28rem;margin:.5rem auto 0}
+header .subtitle{
+  font-family:var(--font-heading);
+  font-size:1.3rem;color:var(--fg);
+  margin-top:.25rem
+}
+
+header .desc{
+  font-size:.85rem;
+  color:var(--muted-fg);
+  max-width:28rem;margin:.5rem auto 0
+}
 
 /* Next prayer banner */
-.next-banner{text-align:center;margin-bottom:2rem}
-.next-banner .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted-fg);margin-bottom:.25rem}
-.next-banner .time{font-size:2.8rem;font-weight:700;color:var(--primary);letter-spacing:.08em;font-family:var(--font-body)}
+.next-banner{
+  text-align:center;
+  margin-bottom:2rem
+}
+
+.next-banner .label{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.15em;color:var(--muted-fg);margin-bottom:.25rem
+}
+
+.next-banner .time{
+  font-size:2.8rem;font-weight:700;
+  color:var(--primary);letter-spacing:.08em;
+  font-family:var(--font-body)
+}
 
 /* Prayer grid */
-.prayer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem}
-.prayer-card{position:relative;border-radius:var(--radius);padding:1.25rem;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .3s,transform .3s;overflow:hidden}
-.prayer-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
-.prayer-card.is-next{background:var(--primary);color:var(--primary-fg);box-shadow:0 6px 20px rgba(42,122,110,.25);outline:2px solid var(--accent)}
-.prayer-card .arabic{position:absolute;top:.4rem;right:.75rem;font-family:var(--font-heading);font-size:1.8rem;opacity:.12;user-select:none}
+.prayer-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1rem;margin-bottom:2.5rem}
+
+.prayer-card{
+  position:relative;border-radius:var(--radius);
+  padding:1.25rem;background:var(--card);
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  transition:box-shadow .3s,transform .3s;overflow:hidden
+}
+
+.prayer-card:hover{
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  transform:translateY(-2px)
+}
+
+.prayer-card.is-next{
+  background:var(--primary);
+  color:var(--primary-fg);box-shadow:0 6px 20px rgba(42,122,110,.25);
+  outline:2px solid var(--accent)
+}
+
+.prayer-card .arabic{
+  position:absolute;top:.4rem;
+  right:.75rem;font-family:var(--font-heading);
+  font-size:1.8rem;opacity:.12;
+  user-select:none
+}
+
 .prayer-card.is-next .arabic{opacity:.2}
 .prayer-card .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;position:relative;z-index:1}
 .prayer-card .name{font-family:var(--font-heading);font-size:1.1rem;font-weight:600}
